@@ -9,6 +9,22 @@ const CHATGPT_API_KEY = process.env.GPT; // Replace with your actual ChatGPT API
 app.use(bodyParser.json());
 
 // Endpoint to receive incoming messages from Facebook Messenger
+const VERIFY_TOKEN = 'Iamchanmin'; // Replace 'your_verify_token' with your actual Verify Token
+
+app.get('/webhook', (req, res) => {
+  const mode = req.query['hub.mode'];
+  const token = req.query['hub.verify_token'];
+  const challenge = req.query['hub.challenge'];
+
+  if (mode && token === VERIFY_TOKEN) {
+    // Respond with the hub.challenge to verify the webhook
+    res.status(200).send(challenge);
+  } else {
+    // If the token doesn't match, return an error
+    res.sendStatus(403);
+  }
+});
+
 app.post('/webhook', async (req, res) => {
   const { body } = req;
 
